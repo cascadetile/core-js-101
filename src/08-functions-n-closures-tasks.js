@@ -24,9 +24,7 @@
  *
  */
 function getComposition(f, g) {
-  return function (x) {
-    return f(g(x));
-  };
+  return (x) => f(g(x));
 }
 
 
@@ -47,9 +45,7 @@ function getComposition(f, g) {
  *
  */
 function getPowerFunction(exponent) {
-  return function (num) {
-    return num ** exponent;
-  };
+  return (num) => num ** exponent;
 }
 
 
@@ -115,12 +111,12 @@ function memoize(func) {
  * retryer() => 2
  */
 function retry(func, attempts) {
-  return function () {
+  return () => {
     for (let i = 0; i < attempts; i += 1) {
       try {
         return func();
       } catch (error) {
-        console.log(error);
+        error.toString();
       }
     }
     throw new Error(`Function failed after ${attempts} attempts`);
