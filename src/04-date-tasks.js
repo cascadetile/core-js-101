@@ -141,8 +141,30 @@ function timeSpanToString(startDate, endDate) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  const timeString12hr = new Date(date)
+    .toLocaleTimeString('en-US',
+      {
+        timeZone: 'UTC',
+        hour12: true,
+        hour: 'numeric',
+        minute: 'numeric',
+      });
+  const hours = timeString12hr.slice(0, timeString12hr.indexOf(':'));
+  const minutes = timeString12hr.slice(timeString12hr.indexOf(':') + 1, timeString12hr.indexOf(' '));
+  let minuteAngle = minutes;
+  minuteAngle *= 6;
+  let hourAngle = (30 * hours) + (minutes * 0.5);
+  if (hourAngle === 360) hourAngle = 0;
+  if (hourAngle > 360) hourAngle -= 360;
+  let diffAngle = Math.max(hourAngle, minuteAngle) - Math.min(hourAngle, minuteAngle);
+  if (diffAngle > 180) {
+    diffAngle = 360 - Math.max(minuteAngle, hourAngle) + Math.min(minuteAngle, hourAngle);
+  }
+  if (diffAngle === 180) {
+    return Math.PI;
+  }
+  return diffAngle * (Math.PI / 180);
 }
 
 
