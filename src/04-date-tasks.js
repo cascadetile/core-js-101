@@ -19,8 +19,8 @@
  *    'Tue, 26 Jan 2016 13:48:02 GMT' => Date()
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
-function parseDataFromRfc2822(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromRfc2822(value) {
+  return new Date(value);
 }
 
 /**
@@ -34,8 +34,8 @@ function parseDataFromRfc2822(/* value */) {
  *    '2016-01-19T16:07:37+00:00'    => Date()
  *    '2016-01-19T08:07:37Z' => Date()
  */
-function parseDataFromIso8601(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromIso8601(value) {
+  return new Date(value);
 }
 
 
@@ -53,8 +53,18 @@ function parseDataFromIso8601(/* value */) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const year = date.getFullYear();
+  if (year % 4 !== 0) {
+    return false;
+  }
+  if (year % 100 !== 0) {
+    return true;
+  }
+  if (year % 400 !== 0) {
+    return false;
+  }
+  return true;
 }
 
 
@@ -73,8 +83,45 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  let diff = endDate.getTime() - startDate.getTime();
+  const components = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    milliseconds: 0,
+  };
+
+  if (diff >= 3600000) {
+    components.hours = Math.floor(diff / 3600000);
+    diff -= components.hours * 3600000;
+  }
+  if (diff >= 60000) {
+    components.minutes = Math.floor(diff / 60000);
+    diff -= components.minutes * 60000;
+  }
+  if (diff >= 1000) {
+    components.seconds = Math.floor(diff / 1000);
+    diff -= components.seconds * 1000;
+  }
+  components.milliseconds = diff;
+
+  if (components.hours < 10) {
+    components.hours = `0${components.hours}`;
+  }
+  if (components.minutes < 10) {
+    components.minutes = `0${components.minutes}`;
+  }
+  if (components.seconds < 10) {
+    components.seconds = `0${components.seconds}`;
+  }
+  if (components.milliseconds < 10) {
+    components.milliseconds = `00${components.milliseconds}`;
+  } else if (components.milliseconds < 100) {
+    components.milliseconds = `0${components.milliseconds}`;
+  }
+
+  return `${components.hours}:${components.minutes}:${components.seconds}.${components.milliseconds}`;
 }
 
 
